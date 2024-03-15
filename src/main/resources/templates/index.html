@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato Controller</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	   <style>
+	       body {
+	           font-family: Arial, sans-serif;
+	           margin: 0;
+	           padding: 0;
+	           background-color: #f2f2f2;
+	       }
+	
+	       h1, h2 {
+	           color: #333;
+	       }
+	
+	       #dados-fixos {
+	           background-color: #fff;
+	           padding: 10px;
+	           margin-bottom: 20px;
+	       }
+	
+	       form {
+	           margin-bottom: 20px;
+	       }
+	
+	       input[type="text"] {
+	           padding: 5px;
+	           margin-right: 10px;
+	       }
+	
+	       button {
+	           padding: 5px 10px;
+	           background-color: #007bff;
+	           color: #fff;
+	           border: none;
+	           cursor: pointer;
+	       }
+	
+	       button:hover {
+	           background-color: #0056b3;
+	       }
+	
+	       .alert {
+	           padding: 10px;
+	           margin-bottom: 20px;
+	           border-radius: 5px;
+	       }
+	
+	       .alert-success {
+	           background-color: #d4edda;
+	           color: #155724;
+	       }
+	
+	       .alert-danger {
+	           background-color: #f8d7da;
+	           color: #721c24;
+	       }
+	   </style>
+</head>
+<body>
+    <h1>Contato Controller</h1>
+
+    <h2>Dados Fixos</h2>
+    <div id="dados-fixos"></div>
+
+    <h2>Cadastrar Novo Contato</h2>
+    <form id="form-cadastrar">
+        <input type="text" name="nome" placeholder="Nome">
+        <input type="text" name="telefone" placeholder="Telefone">
+        <input type="text" name="email" placeholder="Email">
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <h2>Remover Contato</h2>
+    <form id="form-remover">
+        <input type="text" name="telefone" placeholder="Telefone">
+        <button type="submit">Remover</button>
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            $.get("/contatos", function(data) {
+                $("#dados-fixos").html("<p><strong>Nome:</strong> " + data.nome + "</p>" +
+                                       "<p><strong>Telefone:</strong> " + data.telefone + "</p>" +
+                                       "<p><strong>Email:</strong> " + data.email + "</p>");
+            });
+        });
+
+        $("#form-cadastrar").submit(function(event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+            $.post("/contatos", formData, function(response) {
+                alert(response);
+            });
+        });
+
+        $("#form-remover").submit(function(event) {
+            event.preventDefault();
+            var telefone = $(this).find("input[name='telefone']").val();
+            $.ajax({
+                url: "/contatos/" + telefone,
+                type: "DELETE",
+                success: function(response) {
+                    alert(response);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
